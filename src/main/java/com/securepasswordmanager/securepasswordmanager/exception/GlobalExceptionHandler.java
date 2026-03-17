@@ -58,12 +58,12 @@ public class GlobalExceptionHandler {
 
 //    -------------Default exception handler-------------
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleException(HttpServletRequest request) {
+    public ResponseEntity<ErrorResponse> handleException(Exception e, HttpServletRequest request) {
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
-                "Internal server error",
+                "Internal server error: " + e.getMessage(),
                 request.getRequestURI(),
                 null
         );
