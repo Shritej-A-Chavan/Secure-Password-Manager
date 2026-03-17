@@ -7,6 +7,7 @@ import com.securepasswordmanager.securepasswordmanager.repository.UserRepository
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
 //    --------Register user----------
     @Override
@@ -23,7 +25,7 @@ public class UserServiceImpl implements UserService {
             User user = new User();
             user.setUsername(userRegistrationDto.getUsername());
             user.setEmail(userRegistrationDto.getEmail());
-            user.setPassword(userRegistrationDto.getPassword());
+            user.setPassword(passwordEncoder.encode(userRegistrationDto.getPassword()));
             return userRepository.save(user);
         } catch(DataIntegrityViolationException exception) {
             throw new UserAlreadyExistsException("User with this email already exists");
