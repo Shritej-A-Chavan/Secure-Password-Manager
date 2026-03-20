@@ -72,20 +72,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
     }
 
-//    -----------Unauthenticated exception handler----------
-    @ExceptionHandler(UnauthenticatedException.class)
-    public ResponseEntity<ErrorResponse> handleUnauthenticatedException(UnauthenticatedException e, HttpServletRequest request) {
-        ErrorResponse error = new ErrorResponse(
-            LocalDateTime.now(),
-                HttpStatus.UNAUTHORIZED.value(),
-                HttpStatus.UNAUTHORIZED.getReasonPhrase(),
-                e.getMessage(),
-                request.getRequestURI(),
-                null
-        );
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
-    }
-
 //    ---------Unauthorized exception handler (JwtException)---------
     @ExceptionHandler(JwtException.class)
     public ResponseEntity<ErrorResponse> handleAccessDeniedException(HttpServletRequest request) {

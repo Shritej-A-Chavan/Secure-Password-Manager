@@ -25,7 +25,7 @@ public class AuthService {
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if(userDetails == null)  {
-            throw new BadCredentialsException("Invalid email or password");
+            throw new BadCredentialsException("Bad credentials");
         }
 
         return jwtService.generateToken(userDetails.getUsername());
