@@ -73,4 +73,12 @@ public class CredentialService {
 
         return responseDto;
     }
+
+    public void deleteCredential(String email, Long id) {
+        Credential credential = credentialRepository
+                .findByIdAndUserEmail(id, email)
+                .orElseThrow(() -> new ResourceNotFoundException("Credential not found"));
+
+        credentialRepository.delete(credential);
+    }
 }

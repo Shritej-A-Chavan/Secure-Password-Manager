@@ -34,4 +34,12 @@ public class CredentialController {
         String email = userDetails.getUsername();
         return ResponseEntity.ok(credentialService.updateCredential(email, id, credentialRequestDto));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCredential(@AuthenticationPrincipal UserDetails userDetails,
+                                               @PathVariable Long id) {
+        String email = userDetails.getUsername();
+        credentialService.deleteCredential(email, id);
+        return ResponseEntity.noContent().build();
+    }
 }
