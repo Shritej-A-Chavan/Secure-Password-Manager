@@ -27,4 +27,11 @@ public class CredentialController {
         String email = userDetails.getUsername();
         return ResponseEntity.ok(credentialService.save(email, credentialRequestDto));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CredentialResponseDto> updateCredential(@AuthenticationPrincipal UserDetails userDetails,
+                                                                  @RequestBody CredentialRequestDto credentialRequestDto, @PathVariable Long id) {
+        String email = userDetails.getUsername();
+        return ResponseEntity.ok(credentialService.updateCredential(email, id, credentialRequestDto));
+    }
 }

@@ -55,4 +55,22 @@ public class CredentialService {
             throw new CredentialsAlreadyExistsException("Credential already exists for this site or url");
         }
     }
+
+    public CredentialResponseDto updateCredential(String email, Long id, CredentialRequestDto credentialRequestDto) {
+        Credential credential = credentialRepository
+                .findByIdAndUserEmail(id, email)
+                .orElseThrow(() -> new ResourceNotFoundException("Credential not found"));
+
+        credential.setSite(credentialRequestDto.getSite());
+        credential.setUrl(credentialRequestDto.getUrl());
+        credential.setPassword(credentialRequestDto.getPassword());
+        Credential saved = credentialRepository.save(credential);
+
+        CredentialResponseDto responseDto = new CredentialResponseDto();
+        responseDto.setSite(saved.getSite());
+        responseDto.setUrl(saved.getUrl());
+        responseDto.setPassword(saved.getPassword());
+
+        return responseDto;
+    }
 }
