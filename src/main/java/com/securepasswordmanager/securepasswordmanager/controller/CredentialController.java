@@ -7,16 +7,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/credentials")
 @RequiredArgsConstructor
 public class CredentialController {
     private final CredentialService credentialService;
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CredentialResponseDto> getCredential(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id) {
+        String email = userDetails.getUsername();
+        return ResponseEntity.ok(credentialService.getCredential(email, id));
+    }
 
     @PostMapping
     public ResponseEntity<CredentialResponseDto> createCredential(@AuthenticationPrincipal UserDetails userDetails,

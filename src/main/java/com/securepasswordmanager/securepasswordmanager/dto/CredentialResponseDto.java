@@ -6,4 +6,5 @@ import lombok.Data;
 public class CredentialResponseDto {
     private String site;
     private String url;
+    private String password;
 }

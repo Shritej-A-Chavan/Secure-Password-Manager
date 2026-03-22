@@ -18,11 +18,23 @@ public class CredentialService {
     private final CredentialRepository credentialRepository;
     private final UserRepository userRepository;
 
+    public CredentialResponseDto getCredential(String email, Long id) {
+        Credential credential = credentialRepository
+                .findByIdAndUserEmail(id, email)
+                .orElseThrow(() -> new ResourceNotFoundException("Credential not found"));
+
+        CredentialResponseDto credentialResponseDto = new CredentialResponseDto();
+        credentialResponseDto.setSite(credential.getSite());
+        credentialResponseDto.setUrl(credential.getUrl());
+        credentialResponseDto.setPassword(credential.getPassword());
+
+        return credentialResponseDto;
+    }
+
     public CredentialResponseDto save(String email, CredentialRequestDto credentialRequestDto) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "User not found with email: " + email
-                ));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+
         try {
 
             Credential newCredential = new Credential();
@@ -36,6 +48,7 @@ public class CredentialService {
             CredentialResponseDto responseDto = new CredentialResponseDto();
             responseDto.setSite(saved.getSite());
             responseDto.setUrl(saved.getUrl());
+            responseDto.setPassword(saved.getPassword());
 
             return responseDto;
         } catch (DataIntegrityViolationException e) {
