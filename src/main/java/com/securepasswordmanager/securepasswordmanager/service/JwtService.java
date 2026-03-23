@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Map;
 import java.util.HashMap;
@@ -28,8 +30,8 @@ public class JwtService {
                 .claims()
                 .add(claims)
                 .subject(email)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                .issuedAt(Date.from(Instant.now()))
+                .expiration(Date.from(Instant.now().plus(1, ChronoUnit.DAYS)))
                 .and()
                 .signWith(getKey())
                 .compact();
