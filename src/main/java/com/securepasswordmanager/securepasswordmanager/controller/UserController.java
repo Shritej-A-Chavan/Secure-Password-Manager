@@ -18,19 +18,22 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<UserResponseDto> getUser(@AuthenticationPrincipal UserDetails userDetails) {
-        return ResponseEntity.ok(userService.getUser(userDetails.getUsername()));
+        String email = userDetails.getUsername();
+        return ResponseEntity.ok(userService.getUser(email));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<SimpleUserResponseDto> updateUser(@AuthenticationPrincipal UserDetails userDetails,
                                                             @RequestBody UserDetailsDto userDetailsDto,
                                                             @PathVariable Long id) {
-        return ResponseEntity.ok(userService.updateUser(userDetails.getUsername(), userDetailsDto, id));
+        String email = userDetailsDto.getUsername();
+        return ResponseEntity.ok(userService.updateUser(email, userDetailsDto, id));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id) {
-        userService.deleteUser(userDetails.getUsername(), id);
+        String email = userDetails.getUsername();
+        userService.deleteUser(email, id);
         return ResponseEntity.noContent().build();
     }
 }

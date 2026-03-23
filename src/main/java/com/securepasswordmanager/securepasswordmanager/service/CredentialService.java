@@ -23,12 +23,11 @@ public class CredentialService {
                 .findByIdAndUserEmail(id, email)
                 .orElseThrow(() -> new ResourceNotFoundException("Credential not found"));
 
-        CredentialResponseDto credentialResponseDto = new CredentialResponseDto();
-        credentialResponseDto.setSite(credential.getSite());
-        credentialResponseDto.setUrl(credential.getUrl());
-        credentialResponseDto.setPassword(credential.getPassword());
-
-        return credentialResponseDto;
+        return new CredentialResponseDto(
+                credential.getSite(),
+                credential.getUrl(),
+                credential.getPassword()
+        );
     }
 
     public CredentialResponseDto save(String email, CredentialRequestDto credentialRequestDto) {
@@ -45,12 +44,11 @@ public class CredentialService {
 
             Credential saved = credentialRepository.save(newCredential);
 
-            CredentialResponseDto responseDto = new CredentialResponseDto();
-            responseDto.setSite(saved.getSite());
-            responseDto.setUrl(saved.getUrl());
-            responseDto.setPassword(saved.getPassword());
-
-            return responseDto;
+            return new CredentialResponseDto(
+                    saved.getSite(),
+                    saved.getUrl(),
+                    saved.getPassword()
+            );
         } catch (DataIntegrityViolationException e) {
             throw new CredentialsAlreadyExistsException("Credential already exists for this site or url");
         }
@@ -66,12 +64,11 @@ public class CredentialService {
         credential.setPassword(credentialRequestDto.getPassword());
         Credential saved = credentialRepository.save(credential);
 
-        CredentialResponseDto responseDto = new CredentialResponseDto();
-        responseDto.setSite(saved.getSite());
-        responseDto.setUrl(saved.getUrl());
-        responseDto.setPassword(saved.getPassword());
-
-        return responseDto;
+        return new CredentialResponseDto(
+                saved.getSite(),
+                saved.getUrl(),
+                saved.getPassword()
+        );
     }
 
     public void deleteCredential(String email, Long id) {
