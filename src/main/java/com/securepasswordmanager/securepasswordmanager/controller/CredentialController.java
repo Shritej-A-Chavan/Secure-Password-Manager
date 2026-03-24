@@ -1,7 +1,6 @@
 package com.securepasswordmanager.securepasswordmanager.controller;
 
-import com.securepasswordmanager.securepasswordmanager.dto.CredentialRequestDto;
-import com.securepasswordmanager.securepasswordmanager.dto.CredentialResponseDto;
+import com.securepasswordmanager.securepasswordmanager.dto.CredentialDto;
 import com.securepasswordmanager.securepasswordmanager.service.CredentialService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,23 +15,24 @@ public class CredentialController {
     private final CredentialService credentialService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<CredentialResponseDto> getCredential(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id) {
+    public ResponseEntity<CredentialDto> getCredential(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id) {
         String email = userDetails.getUsername();
         return ResponseEntity.ok(credentialService.getCredential(email, id));
     }
 
     @PostMapping
-    public ResponseEntity<CredentialResponseDto> createCredential(@AuthenticationPrincipal UserDetails userDetails,
-                                                                  @RequestBody CredentialRequestDto credentialRequestDto) {
+    public ResponseEntity<CredentialDto> createCredential(@AuthenticationPrincipal UserDetails userDetails,
+                                                          @RequestBody CredentialDto credentialDto) {
         String email = userDetails.getUsername();
-        return ResponseEntity.ok(credentialService.save(email, credentialRequestDto));
+        return ResponseEntity.ok(credentialService.save(email, credentialDto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CredentialResponseDto> updateCredential(@AuthenticationPrincipal UserDetails userDetails,
-                                                                  @RequestBody CredentialRequestDto credentialRequestDto, @PathVariable Long id) {
+    public ResponseEntity<CredentialDto> updateCredential(@AuthenticationPrincipal UserDetails userDetails,
+                                                          @RequestBody CredentialDto credentialDto,
+                                                          @PathVariable Long id) {
         String email = userDetails.getUsername();
-        return ResponseEntity.ok(credentialService.updateCredential(email, id, credentialRequestDto));
+        return ResponseEntity.ok(credentialService.updateCredential(email, id, credentialDto));
     }
 
     @DeleteMapping("/{id}")

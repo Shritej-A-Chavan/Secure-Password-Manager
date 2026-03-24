@@ -1,11 +1,10 @@
 package com.securepasswordmanager.securepasswordmanager.service;
 
-import com.securepasswordmanager.securepasswordmanager.dto.CredentialResponseDto;
-import com.securepasswordmanager.securepasswordmanager.dto.SimpleUserResponseDto;
+import com.securepasswordmanager.securepasswordmanager.dto.CredentialDto;
 import com.securepasswordmanager.securepasswordmanager.dto.UserDetailsDto;
 import com.securepasswordmanager.securepasswordmanager.dto.UserResponseDto;
 import com.securepasswordmanager.securepasswordmanager.exception.ResourceNotFoundException;
-import com.securepasswordmanager.securepasswordmanager.exception.UserAlreadyExistsException;
+import com.securepasswordmanager.securepasswordmanager.exception.ResourceAlreadyExistsException;
 import com.securepasswordmanager.securepasswordmanager.model.User;
 import com.securepasswordmanager.securepasswordmanager.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +29,7 @@ public class UserService  {
         userResponseDto.setCredentials(
                 user.getCredentials()
                         .stream()
-                        .map(credential -> new CredentialResponseDto(
+                        .map(credential -> new CredentialDto(
                                 credential.getSite(),
                                 credential.getUrl(),
                                 credential.getPassword() // encrypted
@@ -41,7 +40,7 @@ public class UserService  {
         return userResponseDto;
     }
 
-    public SimpleUserResponseDto updateUser(String email, UserDetailsDto userDetailsDto, Long id) {
+    public UserResponseDto updateUser(String email, UserDetailsDto userDetailsDto, Long id) {
         User user = userRepository
                 .findByIdAndEmail(id, email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
@@ -52,9 +51,9 @@ public class UserService  {
 
         try {
             User saved = userRepository.save(user);
-            return new SimpleUserResponseDto(saved.getId(), saved.getUsername(), saved.getEmail());
+            return new UserResponseDto(saved.getId(), saved.getUsername(), saved.getEmail(), null);
         } catch (DataIntegrityViolationException e) {
-            throw new UserAlreadyExistsException("User with email " + email + " already exists");
+            throw new ResourceAlreadyExistsException("User with email " + email + " already exists");
         }
     }
 

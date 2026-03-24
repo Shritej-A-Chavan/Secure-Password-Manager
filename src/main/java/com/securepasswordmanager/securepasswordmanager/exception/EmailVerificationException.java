@@ -1,7 +1,9 @@
 package com.securepasswordmanager.securepasswordmanager.exception;
 
-public class EmailVerificationException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class EmailVerificationException extends AppException {
     public EmailVerificationException(String message) {
-        super(message);
+        super(message, HttpStatus.BAD_REQUEST);
     }
 }

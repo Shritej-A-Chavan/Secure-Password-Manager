@@ -17,8 +17,8 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping
-    public ResponseEntity<SimpleUserResponseDto> register(@Valid @RequestBody UserDetailsDto userDetailsDto) {
-        SimpleUserResponseDto savedUser = authService.register(userDetailsDto);
+    public ResponseEntity<UserResponseDto> register(@Valid @RequestBody UserDetailsDto userDetailsDto) {
+        UserResponseDto savedUser = authService.register(userDetailsDto);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")

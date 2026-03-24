@@ -2,8 +2,8 @@ package com.securepasswordmanager.securepasswordmanager.service;
 
 import com.securepasswordmanager.securepasswordmanager.dto.EmailDto;
 import com.securepasswordmanager.securepasswordmanager.dto.LoginDto;
-import com.securepasswordmanager.securepasswordmanager.dto.SimpleUserResponseDto;
 import com.securepasswordmanager.securepasswordmanager.dto.UserDetailsDto;
+import com.securepasswordmanager.securepasswordmanager.dto.UserResponseDto;
 import com.securepasswordmanager.securepasswordmanager.exception.*;
 import com.securepasswordmanager.securepasswordmanager.model.User;
 import com.securepasswordmanager.securepasswordmanager.repository.UserRepository;
@@ -31,7 +31,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final EmailService emailService;
 
-    public SimpleUserResponseDto register(UserDetailsDto userDetailsDto) {
+    public UserResponseDto register(UserDetailsDto userDetailsDto) {
         String otp = OtpGenerator.generateOtp();
         String recipient = userDetailsDto.getEmail();
         String body = EmailUtil.buildOtpEmailBody(otp);
@@ -53,9 +53,9 @@ public class AuthService {
                             body
                     )
             );
-            return new SimpleUserResponseDto(saved.getId(), saved.getUsername(), saved.getEmail());
+            return new UserResponseDto(saved.getId(), saved.getUsername(), saved.getEmail(), null);
         } catch(DataIntegrityViolationException exception) {
-            throw new UserAlreadyExistsException("User with this email already exists");
+            throw new ResourceAlreadyExistsException("An account with this email already exists");
         }
     }
 

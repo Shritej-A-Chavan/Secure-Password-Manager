@@ -1,7 +1,6 @@
 package com.securepasswordmanager.securepasswordmanager.service;
 
 import com.securepasswordmanager.securepasswordmanager.dto.EmailDto;
-import com.securepasswordmanager.securepasswordmanager.exception.EmailSendingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -27,7 +26,7 @@ public class EmailService {
 
             mailSender.send(mailMessage);
         } catch (Exception e) {
-            throw new EmailSendingException("Failed to send mail: " + e.getMessage());
+            throw new RuntimeException("Failed to send mail: " + e.getMessage());
         }
     }
 }
