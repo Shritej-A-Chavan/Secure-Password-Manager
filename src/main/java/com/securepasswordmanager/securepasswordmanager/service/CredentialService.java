@@ -1,8 +1,7 @@
 package com.securepasswordmanager.securepasswordmanager.service;
 
-import com.securepasswordmanager.securepasswordmanager.dto.CredentialRequestDto;
-import com.securepasswordmanager.securepasswordmanager.dto.CredentialResponseDto;
-import com.securepasswordmanager.securepasswordmanager.exception.CredentialsAlreadyExistsException;
+import com.securepasswordmanager.securepasswordmanager.dto.CredentialDto;
+import com.securepasswordmanager.securepasswordmanager.exception.ResourceAlreadyExistsException;
 import com.securepasswordmanager.securepasswordmanager.exception.ResourceNotFoundException;
 import com.securepasswordmanager.securepasswordmanager.model.Credential;
 import com.securepasswordmanager.securepasswordmanager.model.User;
@@ -18,53 +17,53 @@ public class CredentialService {
     private final CredentialRepository credentialRepository;
     private final UserRepository userRepository;
 
-    public CredentialResponseDto getCredential(String email, Long id) {
+    public CredentialDto getCredential(String email, Long id) {
         Credential credential = credentialRepository
                 .findByIdAndUserEmail(id, email)
                 .orElseThrow(() -> new ResourceNotFoundException("Credential not found"));
 
-        return new CredentialResponseDto(
+        return new CredentialDto(
                 credential.getSite(),
                 credential.getUrl(),
                 credential.getPassword()
         );
     }
 
-    public CredentialResponseDto save(String email, CredentialRequestDto credentialRequestDto) {
+    public CredentialDto save(String email, CredentialDto credentialDto) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
 
         try {
 
             Credential newCredential = new Credential();
-            newCredential.setSite(credentialRequestDto.getSite());
-            newCredential.setUrl(credentialRequestDto.getUrl());
-            newCredential.setPassword(credentialRequestDto.getPassword());
+            newCredential.setSite(credentialDto.getSite());
+            newCredential.setUrl(credentialDto.getUrl());
+            newCredential.setPassword(credentialDto.getPassword());
             newCredential.setUser(user);
 
             Credential saved = credentialRepository.save(newCredential);
 
-            return new CredentialResponseDto(
+            return new CredentialDto(
                     saved.getSite(),
                     saved.getUrl(),
                     saved.getPassword()
             );
         } catch (DataIntegrityViolationException e) {
-            throw new CredentialsAlreadyExistsException("Credential already exists for this site or url");
+            throw new ResourceAlreadyExistsException("Credential already exists for this site or url");
         }
     }
 
-    public CredentialResponseDto updateCredential(String email, Long id, CredentialRequestDto credentialRequestDto) {
+    public CredentialDto updateCredential(String email, Long id, CredentialDto credentialDto) {
         Credential credential = credentialRepository
                 .findByIdAndUserEmail(id, email)
                 .orElseThrow(() -> new ResourceNotFoundException("Credential not found"));
 
-        credential.setSite(credentialRequestDto.getSite());
-        credential.setUrl(credentialRequestDto.getUrl());
-        credential.setPassword(credentialRequestDto.getPassword());
+        credential.setSite(credentialDto.getSite());
+        credential.setUrl(credentialDto.getUrl());
+        credential.setPassword(credentialDto.getPassword());
         Credential saved = credentialRepository.save(credential);
 
-        return new CredentialResponseDto(
+        return new CredentialDto(
                 saved.getSite(),
                 saved.getUrl(),
                 saved.getPassword()

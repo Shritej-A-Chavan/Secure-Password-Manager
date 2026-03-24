@@ -1,9 +1,6 @@
 package com.securepasswordmanager.securepasswordmanager.controller;
 
-import com.securepasswordmanager.securepasswordmanager.dto.LoginDto;
-import com.securepasswordmanager.securepasswordmanager.dto.SimpleUserResponseDto;
-import com.securepasswordmanager.securepasswordmanager.dto.UserDetailsDto;
-import com.securepasswordmanager.securepasswordmanager.model.User;
+import com.securepasswordmanager.securepasswordmanager.dto.*;
 import com.securepasswordmanager.securepasswordmanager.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +17,8 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping
-    public ResponseEntity<SimpleUserResponseDto> register(@Valid @RequestBody UserDetailsDto userDetailsDto) {
-        SimpleUserResponseDto savedUser = authService.register(userDetailsDto);
+    public ResponseEntity<UserResponseDto> register(@Valid @RequestBody UserDetailsDto userDetailsDto) {
+        UserResponseDto savedUser = authService.register(userDetailsDto);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
@@ -29,6 +26,18 @@ public class AuthController {
                 .toUri();
 
         return ResponseEntity.created(location).body(savedUser);
+    }
+
+    @PostMapping("/verify")
+    public ResponseEntity<String> verifyEmail(@RequestBody OtpVerificationDto otpVerificationDto) {
+        authService.verify(otpVerificationDto.getEmail(), otpVerificationDto.getOtp());
+        return ResponseEntity.ok("Email verified successfully");
+    }
+
+    @PostMapping("/resend-otp")
+    public ResponseEntity<String> resendOtp(@RequestBody ResendOtpRequestDto request) {
+        authService.resendOtp(request.getEmail());
+        return ResponseEntity.ok("OTP sent successfully");
     }
 
     @PostMapping("/login")

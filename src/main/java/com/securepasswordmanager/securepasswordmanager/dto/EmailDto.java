@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class SimpleUserResponseDto {
-    private Long id;
-    private String username;
-    private String email;
+public class EmailDto {
+    private String recipient;
+    private String subject;
+    private String body;
 }

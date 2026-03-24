@@ -1,6 +1,5 @@
 package com.securepasswordmanager.securepasswordmanager.controller;
 
-import com.securepasswordmanager.securepasswordmanager.dto.SimpleUserResponseDto;
 import com.securepasswordmanager.securepasswordmanager.dto.UserDetailsDto;
 import com.securepasswordmanager.securepasswordmanager.dto.UserResponseDto;
 import com.securepasswordmanager.securepasswordmanager.service.UserService;
@@ -23,10 +22,10 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SimpleUserResponseDto> updateUser(@AuthenticationPrincipal UserDetails userDetails,
+    public ResponseEntity<UserResponseDto> updateUser(@AuthenticationPrincipal UserDetails userDetails,
                                                             @RequestBody UserDetailsDto userDetailsDto,
                                                             @PathVariable Long id) {
-        String email = userDetailsDto.getUsername();
+        String email = userDetails.getUsername();
         return ResponseEntity.ok(userService.updateUser(email, userDetailsDto, id));
     }
 
