@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -144,8 +145,8 @@ public class GlobalExceptionHandler {
     }
 
 //    ---------Email already verified exception handler---------
-    @ExceptionHandler(EmailAlreadyVerifiedException.class)
-    public ResponseEntity<ErrorResponse> handleEmailSendingException(EmailAlreadyVerifiedException e, HttpServletRequest request) {
+    @ExceptionHandler(EmailVerificationException.class)
+    public ResponseEntity<ErrorResponse> handleEmailSendingException(EmailVerificationException e, HttpServletRequest request) {
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
@@ -155,6 +156,20 @@ public class GlobalExceptionHandler {
                 null
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+//    ----------User disabled exception handler---------
+    @ExceptionHandler(DisabledException.class)
+    public ResponseEntity<ErrorResponse> handleDisabledException(DisabledException e, HttpServletRequest request) {
+        ErrorResponse error = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.UNAUTHORIZED.value(),
+                e.getMessage(),
+                "Please verify your email",
+                request.getRequestURI(),
+                null
+        );
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 
 //    -------------Default exception handler-------------

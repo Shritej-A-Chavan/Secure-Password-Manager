@@ -64,7 +64,7 @@ public class AuthService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
 
         if (user.isVerified()) {
-            throw new EmailAlreadyVerifiedException("Email is already verified");
+            throw new EmailVerificationException("Email is already verified");
         }
 
         if (Instant.now().isAfter(user.getOtpCreatedAt().plus(10, ChronoUnit.MINUTES))) {
@@ -93,7 +93,7 @@ public class AuthService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
 
         if (user.isVerified()) {
-            throw new EmailAlreadyVerifiedException("Email is already verified");
+            throw new EmailVerificationException("Email is already verified");
         }
 
         String otp = OtpGenerator.generateOtp();
@@ -123,7 +123,7 @@ public class AuthService {
         );
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (userDetails == null) {
+        if(userDetails == null) {
             throw new BadCredentialsException("Bad credentials");
         }
 
