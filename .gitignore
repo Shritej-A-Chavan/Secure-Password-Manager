@@ -34,6 +34,7 @@ build/
 
 # Application configs
 src/main/resources/application.properties
+src/main/resources/keystore.p12
 src/main/resources/application.yml
 
 # Logs
