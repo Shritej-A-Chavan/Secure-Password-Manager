@@ -1,0 +1,89 @@
+# ======================
+# Client (Next.js)
+# ======================
+# dependencies
+/client/node_modules
+/client/.pnp
+/client/.pnp.*
+/client/.yarn/*
+/client/!.yarn/patches
+/client/!.yarn/plugins
+/client/!.yarn/releases
+/client/!.yarn/versions
+
+# testing
+/client/coverage
+
+# next.js
+/client/.next/
+/client/out/
+
+# production
+/client/build
+
+# misc
+/client/.DS_Store
+/client/*.pem
+
+# debug
+/client/npm-debug.log*
+/client/yarn-debug.log*
+/client/yarn-error.log*
+/client/.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+/client/.env*
+
+# vercel
+/client/.vercel
+
+# typescript
+/client/*.tsbuildinfo
+/client/next-env.d.ts
+
+# ======================
+# Server (Spring Boot)
+# ======================
+/server/target/
+/server/.mvn/wrapper/maven-wrapper.jar
+
+# Allow nested target if needed
+!/server/**/src/main/**/target/
+!/server/**/src/test/**/target/
+
+# IDE - STS
+/server/.apt_generated
+/server/.classpath
+/server/.factorypath
+/server/.project
+/server/.settings/
+/server/.springBeans
+/server/.sts4-cache
+
+# IntelliJ
+/server/.idea/
+/server/*.iws
+/server/*.iml
+/server/*.ipr
+
+# NetBeans
+/server/nbproject/private/
+/server/nbbuild/
+/server/dist/
+/server/nbdist/
+/server/.nb-gradle/
+/server/build/
+!/server/**/src/main/**/build/
+!/server/**/src/test/**/build/
+
+# VS Code
+/server/.vscode/
+
+# Application configs
+/server/src/main/resources/application.properties
+/server/src/main/resources/application.yml
+/server/src/main/resources/keystore.p12
+
+# Logs
+/server/*.log
+/server/logs/
