@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
+import { cn } from "@/lib/utils";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,9 +30,39 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={cn(
+        "h-full",
+        "antialiased",
+        geistSans.variable,
+        geistMono.variable,
+        "font-sans",
+        inter.variable,
+      )}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col text-white">
+        <div className="min-h-screen w-full relative">
+          {/* 🌌 Gradient Background (LOWEST LAYER) */}
+          <div
+            className="fixed inset-0 -z-20"
+            style={{
+              background:
+                "radial-gradient(125% 125% at 50% 10%, #000000 40%, #0d1a36 100%)",
+            }}
+          />
+
+          {/* 💡 Glow Layer (ABOVE GRADIENT) */}
+          <div className="fixed inset-0 -z-10 flex justify-center items-start pt-32 pointer-events-none">
+            <div className="w-150 h-75 bg-cyan-500/20 blur-[120px] rounded-full" />
+          </div>
+
+          {/* 🧱 CONTENT */}
+          <div className="relative z-10">
+            <Navbar />
+            {children}
+            <Footer />
+          </div>
+        </div>
+      </body>
     </html>
   );
 }
