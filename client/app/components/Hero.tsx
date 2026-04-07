@@ -46,7 +46,7 @@ export default function Hero() {
             confidence.
           </p>
           <p>
-            Vaultify keeps everything encrypted, private, and always within your
+            VaultX keeps everything encrypted, private, and always within your
             control.
           </p>
         </motion.div>

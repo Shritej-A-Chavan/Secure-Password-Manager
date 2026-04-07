@@ -24,7 +24,7 @@ export default function About() {
           </h2>
 
           <p className="text-white/70 text-lg leading-relaxed">
-            Vaultify is more than just a password manager. It’s a secure vault
+            VaultX is more than just a password manager. It’s a secure vault
             designed to give you full control over your digital identity.
           </p>
 
