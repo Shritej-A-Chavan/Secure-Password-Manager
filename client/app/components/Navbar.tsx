@@ -91,7 +91,7 @@ export default function Navbar() {
             className="text-lg font-semibold cursor-pointer"
           >
             <span className="bg-linear-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-              Vaultify
+              VaultX
             </span>
           </div>
 
