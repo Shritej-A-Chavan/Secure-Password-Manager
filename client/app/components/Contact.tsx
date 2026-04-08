@@ -15,7 +15,7 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      className="relative bg-black text-white py-24 border-t border-white/10"
+      className="relative bg-black text-white py-16 border-t border-white/10"
     >
       {/* Background Glow */}
       <div className="absolute inset-0 opacity-10">
@@ -61,7 +61,7 @@ export default function Contact() {
               <SiX className="text-white/60 hover:text-white transition cursor-pointer" />
             </div>
 
-            <p className="text-xs text-white/40 mt-6">
+            <p className="text-xs text-white/80 mt-6">
               For security-related concerns, please mention “Security” in
               subject line.
             </p>

@@ -5,7 +5,7 @@ import VaultCard from "./VaultCard";
 
 export default function About() {
   return (
-    <section id="about" className="relative py-24 px-6">
+    <section id="about" className="relative px-6 py-16">
       <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
         {/* LEFT CONTENT */}
         <motion.div
@@ -15,9 +15,9 @@ export default function About() {
           viewport={{ once: true }}
           className="space-y-6"
         >
-          <h2 className="text-4xl md:text-5xl font-semibold leading-tight">
+          <h2 className="text-4xl md:text-6xl font-medium leading-tight">
             Built for{" "}
-            <span className="bg-linear-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-cyan-200 to-cyan-400 bg-clip-text text-transparent">
               Privacy First
             </span>{" "}
             Users

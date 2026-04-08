@@ -19,9 +19,12 @@ export default function Navbar() {
     const el = document.getElementById(id);
     if (!el) return;
 
-    el.scrollIntoView({
+    const yOffset = -60;
+    const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+
+    window.scrollTo({
+      top: y,
       behavior: "smooth",
-      block: "start",
     });
   };
 
@@ -90,7 +93,7 @@ export default function Navbar() {
             onClick={() => scrollToSection("home")}
             className="text-lg font-semibold cursor-pointer"
           >
-            <span className="bg-linear-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-cyan-200 to-cyan-400 bg-clip-text text-transparent">
               VaultX
             </span>
           </div>
@@ -116,7 +119,7 @@ export default function Navbar() {
               </button>
             ))}
 
-            {/* 🔥 Sliding Indicator */}
+            {/* Sliding Indicator */}
             <span
               ref={indicatorRef}
               className="absolute -bottom-1 h-0.5 bg-cyan-400 rounded-full transition-all duration-300"

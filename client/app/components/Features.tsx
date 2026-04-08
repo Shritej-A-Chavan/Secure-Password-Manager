@@ -38,16 +38,16 @@ const features = [
 
 export default function Features() {
   return (
-    <section id="features" className="relative py-24 px-6 overflow-hidden">
-      <div className="max-w-6xl mx-auto text-center mb-12">
+    <section id="features" className="relative px-6 py-16 overflow-hidden">
+      <div className="max-w-6xl mx-auto mb-12 text-center">
         <motion.h2
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-4xl md:text-6xl font-semibold tracking-tight"
+          className="text-4xl md:text-6xl font-medium tracking-tight"
         >
           Security Meets{" "}
-          <span className="bg-linear-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-cyan-200 to-cyan-400 bg-clip-text text-transparent">
             Simplicity
           </span>
         </motion.h2>
@@ -98,7 +98,7 @@ export default function Features() {
               </h3>
 
               {/* Description */}
-              <p className="text-gray-400 text-sm leading-relaxed">
+              <p className="text-gray-300 text-sm leading-relaxed">
                 {feature.desc}
               </p>
             </motion.div>
