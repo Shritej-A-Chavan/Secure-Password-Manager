@@ -8,8 +8,11 @@ import com.securepasswordmanager.securepasswordmanager.exception.*;
 import com.securepasswordmanager.securepasswordmanager.model.User;
 import com.securepasswordmanager.securepasswordmanager.repository.UserRepository;
 import com.securepasswordmanager.securepasswordmanager.util.EmailUtil;
-import com.securepasswordmanager.securepasswordmanager.util.OtpGenerator;
+
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,7 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
+import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -30,26 +33,27 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final EmailService emailService;
+    @Value("${app.frontend.url}")
+    private String frontendUrl;
 
     public UserResponseDto register(UserDetailsDto userDetailsDto) {
-        String otp = OtpGenerator.generateOtp();
+        String token = jwtService.generateToken(userDetailsDto.getEmail());
         String recipient = userDetailsDto.getEmail();
-        String body = EmailUtil.buildOtpEmailBody(otp);
+        String verificationLink = frontendUrl + "/verify-email?token=" + token;
+        String body = EmailUtil.buildEmailBody(userDetailsDto.getUsername(), verificationLink);
 
         try {
             User user = new User();
             user.setUsername(userDetailsDto.getUsername());
             user.setEmail(userDetailsDto.getEmail());
             user.setPassword(passwordEncoder.encode(userDetailsDto.getPassword()));
-            user.setOtp(passwordEncoder.encode(otp));
-            user.setOtpCreatedAt(Instant.now());
             user.setVerified(false);
             User saved = userRepository.save(user);
 
             emailService.sendMail(
                     new EmailDto(
                             recipient,
-                            "OTP Verification Code",
+                            "Verify your email",
                             body
                     )
             );
@@ -59,61 +63,53 @@ public class AuthService {
         }
     }
 
-    public void verify(String email, String otp) {
+    public void verifyEmail(String token) {
+        Claims claims;
+        try {
+            claims = jwtService.extractAllClaims(token);
+        } catch (Exception e) {
+            throw new EmailVerificationException("Invalid or tampered token");
+        }
+        
+        if (claims.getExpiration().before(Date.from(Instant.now()))) {
+            throw new EmailVerificationException("Email verification link has expired");
+        }
+
+        String email = claims.getSubject();
+
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+                .orElseThrow(() -> new EmailVerificationException("Invalid token"));
 
-        if (user.isVerified()) {
-            throw new EmailVerificationException("Email is already verified");
-        }
-
-        if (Instant.now().isAfter(user.getOtpCreatedAt().plus(10, ChronoUnit.MINUTES))) {
-            throw new OtpException("OTP has expired");
-        }
-
-        if (user.getOtpVerificationAttempts() >= 3) {
-            throw new OtpException("Maximum OTP attempts exceeded");
-        }
-
-        if (!passwordEncoder.matches(otp, user.getOtp())) {
-            user.setOtpVerificationAttempts(user.getOtpVerificationAttempts() + 1);
-            userRepository.save(user);
-
-            throw new OtpException("Invalid OTP");
-        }
+        if (user.isVerified())
+            throw new EmailVerificationException("Email already verified");
 
         user.setVerified(true);
-        user.setOtp(null);
-        user.setOtpVerificationAttempts(0);
         userRepository.save(user);
     }
 
-    public void resendOtp(String email) {
+    public void resendVerificationMail(String email) {
+        if(email == null)
+            throw new EmailVerificationException("Please provide valid email id");
+
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
 
-        if (user.isVerified()) {
-            throw new EmailVerificationException("Email is already verified");
-        }
+        if (user.isVerified())
+            throw new EmailVerificationException("Email already verified");
 
-        String otp = OtpGenerator.generateOtp();
-        String body = EmailUtil.buildOtpEmailBody(otp);
-
-        user.setOtp(passwordEncoder.encode(otp));
-        user.setOtpCreatedAt(Instant.now());
-        user.setOtpVerificationAttempts(0);
-
-        userRepository.save(user);
+        String token = jwtService.generateToken(user.getEmail());
+        String verificationLink = frontendUrl + "/verify-email?token=" + token;
+        String body = EmailUtil.buildEmailBody(user.getUsername(), verificationLink);
 
         emailService.sendMail(
-                new EmailDto(
-                        email,
-                        "OTP Verification Code",
-                        body
-                )
+            new EmailDto(
+                user.getEmail(),
+                "Verify your email",
+                body
+            )
         );
     }
-
+    
     public String authenticate(LoginDto loginDto) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

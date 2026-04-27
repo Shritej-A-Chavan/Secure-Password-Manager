@@ -3,6 +3,6 @@ package com.securepasswordmanager.securepasswordmanager.dto;
 import lombok.Data;
 
 @Data
-public class ResendOtpRequestDto {
+public class EmailVerificationDto {
     private String email;
 }

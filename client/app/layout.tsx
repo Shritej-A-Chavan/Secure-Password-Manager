@@ -2,10 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
+import { Toaster } from "sonner";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,12 +35,12 @@ export default function RootLayout({
         geistSans.variable,
         geistMono.variable,
         "font-sans",
-        inter.variable,
+        geist.variable,
       )}
     >
       <body className="min-h-full flex flex-col text-white">
         <div className="min-h-screen w-full relative">
-          {/* 🌌 Gradient Background (LOWEST LAYER) */}
+          {/*  Gradient Background (LOWEST LAYER) */}
           <div
             className="fixed inset-0 -z-20"
             style={{
@@ -56,11 +55,15 @@ export default function RootLayout({
           </div>
 
           {/* 🧱 CONTENT */}
-          <div className="relative z-10">
-            <Navbar />
-            {children}
-            <Footer />
-          </div>
+          <div className="relative z-10">{children}</div>
+          <Toaster
+            position="top-right"
+            closeButton
+            toastOptions={{
+              className:
+                "bg-zinc-900 border border-zinc-800 text-zinc-200 shadow-lg",
+            }}
+          />
         </div>
       </body>
     </html>

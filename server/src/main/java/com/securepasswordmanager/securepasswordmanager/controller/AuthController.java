@@ -16,7 +16,7 @@ import java.net.URI;
 public class AuthController {
     private final AuthService authService;
 
-    @PostMapping
+    @PostMapping("/signup")
     public ResponseEntity<UserResponseDto> register(@Valid @RequestBody UserDetailsDto userDetailsDto) {
         UserResponseDto savedUser = authService.register(userDetailsDto);
 
@@ -28,16 +28,16 @@ public class AuthController {
         return ResponseEntity.created(location).body(savedUser);
     }
 
-    @PostMapping("/verify")
-    public ResponseEntity<String> verifyEmail(@RequestBody OtpVerificationDto otpVerificationDto) {
-        authService.verify(otpVerificationDto.getEmail(), otpVerificationDto.getOtp());
-        return ResponseEntity.ok("Email verified successfully");
+    @PostMapping("/verify-email")
+    public ResponseEntity<Void> verify(@RequestParam String token) {
+        authService.verifyEmail(token);
+        return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/resend-otp")
-    public ResponseEntity<String> resendOtp(@RequestBody ResendOtpRequestDto request) {
-        authService.resendOtp(request.getEmail());
-        return ResponseEntity.ok("OTP sent successfully");
+    @PostMapping("/resend-verification")
+    public ResponseEntity<Void> resendVerificationMail(@RequestBody EmailVerificationDto emailVerificationDto) {
+        authService.resendVerificationMail(emailVerificationDto.getEmail());
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/login")

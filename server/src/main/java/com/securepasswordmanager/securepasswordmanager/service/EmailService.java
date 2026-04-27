@@ -1,10 +1,12 @@
 package com.securepasswordmanager.securepasswordmanager.service;
 
 import com.securepasswordmanager.securepasswordmanager.dto.EmailDto;
+
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,14 +19,14 @@ public class EmailService {
 
     public void sendMail(EmailDto emailDto) {
         try {
-            SimpleMailMessage mailMessage = new SimpleMailMessage();
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-            mailMessage.setFrom(sender);
-            mailMessage.setTo(emailDto.getRecipient());
-            mailMessage.setText(emailDto.getBody());
-            mailMessage.setSubject(emailDto.getSubject());
+            helper.setTo(emailDto.getRecipient());
+            helper.setSubject(emailDto.getSubject());
+            helper.setText(emailDto.getBody(), true);
 
-            mailSender.send(mailMessage);
+            mailSender.send(message);
         } catch (Exception e) {
             throw new RuntimeException("Failed to send mail: " + e.getMessage());
         }

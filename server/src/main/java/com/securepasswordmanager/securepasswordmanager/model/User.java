@@ -30,9 +30,5 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Credential> credentials;
 
-    private String otp;
-
-    private Instant otpCreatedAt;
-    private int otpVerificationAttempts;
     private boolean verified;
 }

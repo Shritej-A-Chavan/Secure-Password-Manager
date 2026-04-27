@@ -4,6 +4,51 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Fade + slide in */
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(40px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* Fade + slide out */
+@keyframes toast-out {
+  from {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(40px) scale(0.98);
+  }
+}
+
+/* Apply to Sonner */
+[data-sonner-toast] {
+  animation: toast-in 0.25s ease-out;
+}
+
+/* Exit animation */
+[data-sonner-toast][data-removed="true"] {
+  animation: toast-out 0.2s ease-in forwards;
+}
+
+[data-sonner-toast] {
+  background: rgba(24, 24, 27, 0.9); /* zinc-900 */
+  border: 1px solid rgba(63, 63, 70, 0.6); /* zinc-700 */
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.08); /* soft purple glow */
+  backdrop-filter: blur(12px);
+}
+
+[data-sonner-toast] {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
