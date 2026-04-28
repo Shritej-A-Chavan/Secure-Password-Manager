@@ -37,26 +37,15 @@ public class AuthService {
     private String frontendUrl;
 
     public UserResponseDto register(UserDetailsDto userDetailsDto) {
-        String token = jwtService.generateToken(userDetailsDto.getEmail());
-        String recipient = userDetailsDto.getEmail();
-        String verificationLink = frontendUrl + "/verify-email?token=" + token;
-        String body = EmailUtil.buildEmailBody(userDetailsDto.getUsername(), verificationLink);
-
         try {
             User user = new User();
             user.setUsername(userDetailsDto.getUsername());
             user.setEmail(userDetailsDto.getEmail());
             user.setPassword(passwordEncoder.encode(userDetailsDto.getPassword()));
+            user.setEnabled(true);
             user.setVerified(false);
             User saved = userRepository.save(user);
 
-            emailService.sendMail(
-                    new EmailDto(
-                            recipient,
-                            "Verify your email",
-                            body
-                    )
-            );
             return new UserResponseDto(saved.getId(), saved.getUsername(), saved.getEmail(), null);
         } catch(DataIntegrityViolationException exception) {
             throw new ResourceAlreadyExistsException("An account with this email already exists");
@@ -87,7 +76,7 @@ public class AuthService {
         userRepository.save(user);
     }
 
-    public void resendVerificationMail(String email) {
+    public void sendVerificationMail(String email) {
         if(email == null)
             throw new EmailVerificationException("Please provide valid email id");
 
@@ -122,6 +111,12 @@ public class AuthService {
         if(userDetails == null) {
             throw new BadCredentialsException("Bad credentials");
         }
+
+        User user = userRepository.findByEmail(userDetails.getUsername())
+            .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + userDetails.getUsername()));
+
+        if(!user.isVerified()) 
+            throw new EmailVerificationException("EMAIL_NOT_VERIFIED");
 
         return jwtService.generateToken(userDetails.getUsername());
     }

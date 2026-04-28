@@ -4,12 +4,13 @@ export type resendVerificationPayload = {
     email: string
 }
 
-export const resendVerificationEmail = async (data: resendVerificationPayload) => {
+export const sendVerificationEmail = async (data: resendVerificationPayload) => {
   try {
-    const response = await api.post("/auth/resend-verification", data);
+    const response = await api.post("/auth/send-verification", data);
     return response.data;
   } catch (error: any) {
     const message = error?.response?.data?.message || error.message;
+
     throw new Error(message);
   }
-}
+};
