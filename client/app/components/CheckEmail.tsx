@@ -26,7 +26,7 @@ export default function CheckEmail() {
     if (!email || initialSent) return;
 
     handleResend();
-    setInitialSent(true); // prevent multiple calls
+    setInitialSent(true); 
   }, [email]);
 
   const handleResend = async () => {

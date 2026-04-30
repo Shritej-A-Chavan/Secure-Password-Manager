@@ -1,4 +1,4 @@
-"use client";
+export const dynamic = "force-dynamic";
 
 import AuthFooter from "../components/AuthFooter";
 import AuthNavbar from "../components/AuthNavbar";
