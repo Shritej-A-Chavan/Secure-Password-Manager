@@ -2,13 +2,19 @@ package com.securepasswordmanager.securepasswordmanager.controller;
 
 import com.securepasswordmanager.securepasswordmanager.dto.*;
 import com.securepasswordmanager.securepasswordmanager.service.AuthService;
+
+import jakarta.servlet.http.Cookie;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.Duration;
 
 @RestController
 @RequestMapping("/auth")
@@ -34,15 +40,28 @@ public class AuthController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/resend-verification")
+    @PostMapping("/send-verification")
     public ResponseEntity<Void> resendVerificationMail(@RequestBody EmailVerificationDto emailVerificationDto) {
-        authService.resendVerificationMail(emailVerificationDto.getEmail());
+        System.out.println(emailVerificationDto.getEmail());
+        authService.sendVerificationMail(emailVerificationDto.getEmail());
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
+    public ResponseEntity<Void> login(@RequestBody LoginDto loginDto) {
         String token = authService.authenticate(loginDto);
-        return ResponseEntity.ok(token);
+        
+         ResponseCookie cookie = ResponseCookie.from("token", token)
+        .httpOnly(true)
+        .secure(true)
+        .sameSite("Strict")
+        .path("/")
+        .maxAge(Duration.ofDays(1))
+        .build();
+
+        return ResponseEntity
+            .noContent()
+            .header(HttpHeaders.SET_COOKIE, cookie.toString())
+            .build();
     }
 }
