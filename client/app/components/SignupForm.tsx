@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -14,6 +14,7 @@ import { signupSchema, SignupFormData } from "../schemas/signupSchema";
 import { getPasswordRules } from "@/lib/utils";
 import { signup } from "@/services/signup.service";
 import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/store/auth.store";
 
 export default function SignupForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -21,6 +22,14 @@ export default function SignupForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const router = useRouter();
+
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.replace("/");
+    }
+  }, [isAuthenticated]);
 
   const {
     register,

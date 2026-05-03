@@ -3,6 +3,10 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { logout } from "@/services/logout.service";
+import { toast } from "sonner";
+import { useAuthStore } from "@/store/auth.store";
 
 const sections = ["home", "about", "features", "contact"];
 
@@ -13,6 +17,12 @@ export default function Navbar() {
 
   const navRef = useRef<HTMLDivElement>(null);
   const indicatorRef = useRef<HTMLSpanElement>(null);
+
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const loading = useAuthStore((state) => state.loading);
+  const clearAuth = useAuthStore((state) => state.clearAuth)
+
+  const router = useRouter();
 
   // Smooth Scroll
   const scrollToSection = (id: string) => {
@@ -77,6 +87,37 @@ export default function Navbar() {
     }
   }, [active]);
 
+  function loginHandler() {
+    router.push("/login")
+  }
+
+  function signupHandler() {
+    router.push("/signup") 
+  }
+
+  function profileHandler() {
+    router.push("/profile")
+  }
+
+  async function logoutHandler() {
+    try {
+      await logout()
+      clearAuth()
+      router.push("/")
+      router.refresh()
+    } catch(error: any) {
+      toast.error(error.message)
+    }
+  }
+
+  if (loading) {
+    return (
+      <nav>
+        Loading...
+      </nav>
+    );
+  }
+
   return (
     <nav className="fixed top-6 z-50 w-full flex justify-center px-4">
       <div
@@ -128,14 +169,25 @@ export default function Navbar() {
           </div>
 
           {/* Buttons */}
-          <div className="hidden md:flex items-center gap-2">
-            <Button variant="ghost" className="text-gray-300">
-              Login
-            </Button>
-            <Button className="bg-cyan-500 hover:bg-cyan-600 text-black">
-              Sign up
-            </Button>
-          </div>
+          {isAuthenticated ? (
+            <div className="hidden md:flex items-center gap-2">
+              <Button variant="ghost" className="text-gray-300" onClick={profileHandler} >
+                Profile
+              </Button>
+              <Button className="bg-cyan-500 hover:bg-cyan-600 text-black" onClick={logoutHandler}>
+                Logout
+              </Button>
+            </div>
+          ) : (
+            <div className="hidden md:flex items-center gap-2">
+              <Button variant="ghost" className="text-gray-300" onClick={loginHandler}>
+                Login
+              </Button>
+              <Button className="bg-cyan-500 hover:bg-cyan-600 text-black" onClick={signupHandler}>
+                Sign up
+              </Button>
+            </div>
+          )}
 
           {/* Mobile Toggle */}
           <button
@@ -168,10 +220,18 @@ export default function Navbar() {
             </button>
           ))}
 
-          <div className="flex flex-col gap-2 pt-4 border-t border-white/10">
-            <Button variant="ghost">Login</Button>
-            <Button className="bg-cyan-500 text-black">Sign up</Button>
-          </div>
+
+          {isAuthenticated ? (
+            <div className="flex flex-col gap-2 pt-4 border-t border-white/10">
+              <Button variant="ghost" onClick={profileHandler}>Profile</Button>
+              <Button className="bg-cyan-500 text-black" onClick={logoutHandler}>Logout</Button>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-2 pt-4 border-t border-white/10">
+              <Button variant="ghost" onClick={loginHandler}>Login</Button>
+              <Button className="bg-cyan-500 text-black" onClick={signupHandler}>Sign up</Button>
+            </div>
+          )}
         </div>
       )}
 

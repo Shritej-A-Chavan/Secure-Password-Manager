@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Eye, EyeOff, ShieldCheck } from "lucide-react";
 import { loginUser } from "@/services/login.service";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import VerifyEmailModal from "@/app/components/VerifyEmailModal";
+import { useAuthStore } from "@/store/auth.store";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -15,6 +16,14 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showVerifyModal, setShowVerifyModal] = useState(false);
+  const setAuth = useAuthStore((state) => state.setAuth)
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.replace("/");
+    }
+  }, [isAuthenticated]);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -23,11 +32,12 @@ export default function LoginForm() {
 
     try {
       setLoading(true);
-
+      setAuth(email)
       await loginUser({ email, password });
 
       toast.success("Login successful");
-      router.push("/");
+      setAuth
+      router.replace("/");
     } catch (err: any) {
       const message = err.message;
 
