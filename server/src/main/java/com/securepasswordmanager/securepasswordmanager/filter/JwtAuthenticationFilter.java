@@ -5,6 +5,7 @@ import com.securepasswordmanager.securepasswordmanager.service.JwtService;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -26,18 +27,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final ApplicationContext applicationContext;
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+
+        return path.startsWith("/auth/");
+    }
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request,HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        String authHeader = request.getHeader("Authorization");
         String jwtToken = null;
         String email = null;
 
-        try {
-            if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                jwtToken = authHeader.substring(7);
-                email = jwtService.extractUsername(jwtToken);
-            }
+        for(Cookie cookie : request.getCookies()) {
+            if(cookie.getName().equals("token"))
+                jwtToken = cookie.getValue();
+        }
 
+        try {
+            email = jwtService.extractUsername(jwtToken);
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (email != null && authentication == null) {
                 UserDetails userDetails = applicationContext.getBean(CustomUserDetailsService.class)

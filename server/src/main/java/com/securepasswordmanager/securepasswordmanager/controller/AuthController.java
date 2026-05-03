@@ -2,8 +2,8 @@ package com.securepasswordmanager.securepasswordmanager.controller;
 
 import com.securepasswordmanager.securepasswordmanager.dto.*;
 import com.securepasswordmanager.securepasswordmanager.service.AuthService;
-
-import jakarta.servlet.http.Cookie;
+    
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -52,12 +52,28 @@ public class AuthController {
         String token = authService.authenticate(loginDto);
         
          ResponseCookie cookie = ResponseCookie.from("token", token)
-        .httpOnly(true)
-        .secure(true)
-        .sameSite("Strict")
-        .path("/")
-        .maxAge(Duration.ofDays(1))
-        .build();
+            .httpOnly(true)
+            .secure(false)
+            .sameSite("lax")
+            .path("/")
+            .maxAge(Duration.ofDays(1))
+            .build();
+
+        return ResponseEntity
+            .noContent()
+            .header(HttpHeaders.SET_COOKIE, cookie.toString())
+            .build();
+    }
+    
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletResponse response) {
+        ResponseCookie cookie = ResponseCookie.from("token", null)
+            .httpOnly(true)
+            .secure(false)
+            .sameSite("lax")
+            .path("/")
+            .maxAge(0)
+            .build();
 
         return ResponseEntity
             .noContent()
