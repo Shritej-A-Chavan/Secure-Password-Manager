@@ -1,13 +1,10 @@
 "use client";
 
-import AuthFooter from "../components/AuthFooter";
-import AuthNavbar from "../components/AuthNavbar";
-import SignupForm from "../components/SignupForm";
+import SignupForm from "../../components/SignupForm";
 
 export default function Page() {
   return (
     <div className="min-h-screen flex flex-col bg-zinc-950">
-      <AuthNavbar />
       {/* Main Content */}
       <div className="flex-1 flex items-center justify-center px-4 relative">
         {/* Background Glow */}
@@ -17,8 +14,6 @@ export default function Page() {
 
         <SignupForm />
       </div>
-
-      <AuthFooter />
     </div>
   );
 }

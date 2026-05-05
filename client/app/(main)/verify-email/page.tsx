@@ -1,4 +1,4 @@
-import VerifyEmail from "../components/VerifyEmail";
+import VerifyEmail from "../../components/VerifyEmail";
 
 export const dynamic = "force-dynamic";
 

@@ -54,7 +54,7 @@ public class GlobalExceptionHandler {
 //    ---------Bad credentials exception handler-----------
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleBadCredentialsException(HttpServletRequest request) {
-        return buildErrorResponse(HttpStatus.BAD_REQUEST, "Incorrect email id or password", request, null);
+        return buildErrorResponse(HttpStatus.UNAUTHORIZED, "Incorrect email id or password", request, null);
     }
     
 //    ----------Disabled user exception handler---------

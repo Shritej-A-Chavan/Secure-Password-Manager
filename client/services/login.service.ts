@@ -10,7 +10,6 @@ export const loginUser = async (data: {
     });
     return res.data;
   } catch (error: any) {
-    console.log(error)
     const message =
       error?.response?.data?.message || error.message;
 

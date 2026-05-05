@@ -29,18 +29,19 @@ export default function LoginForm() {
     if (!email || !password) {
       return toast.error("All fields are required");
     }
-
+  
     try {
       setLoading(true);
-      setAuth(email)
+  
       await loginUser({ email, password });
-
+  
+      setAuth(email);
+  
       toast.success("Login successful");
-      setAuth
       router.replace("/");
     } catch (err: any) {
       const message = err.message;
-
+  
       if (message === "EMAIL_NOT_VERIFIED") {
         setShowVerifyModal(true);
       } else {

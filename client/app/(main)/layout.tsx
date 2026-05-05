@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
-import { loggedInUser } from "@/services/getUser.service";
-import AppInit from "./components/AppInit";
-import Footer from "./components/Footer";
-import Navbar from "./components/Navbar";
+import AppInit from "../components/AppInit";
+import Footer from "../components/Footer";
+import Navbar from "../components/Navbar";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 

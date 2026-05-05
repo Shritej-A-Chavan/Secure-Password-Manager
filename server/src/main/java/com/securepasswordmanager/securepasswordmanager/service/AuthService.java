@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -101,23 +100,21 @@ public class AuthService {
     
     public String authenticate(LoginDto loginDto) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginDto.getEmail(),
-                        loginDto.getPassword()
-                )
+            new UsernamePasswordAuthenticationToken(
+                loginDto.getEmail(),
+                loginDto.getPassword()
+            )
         );
-
+    
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if(userDetails == null) {
-            throw new BadCredentialsException("Bad credentials");
-        }
-
+    
         User user = userRepository.findByEmail(userDetails.getUsername())
-            .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + userDetails.getUsername()));
-
-        if(!user.isVerified()) 
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    
+        if (!user.isVerified()) {
             throw new EmailVerificationException("EMAIL_NOT_VERIFIED");
-
+        }
+    
         return jwtService.generateToken(userDetails.getUsername());
     }
 }

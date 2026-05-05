@@ -9,16 +9,29 @@ export default function AppInit() {
   const clearAuth = useAuthStore((s) => s.clearAuth);
 
   useEffect(() => {
+    let mounted = true;
+
     async function init() {
       try {
-        const email = await loggedInUser();
-        setAuth(email);
+        const user = await loggedInUser();
+
+        if (!mounted) return;
+
+        if (user) {
+          setAuth(user);
+        } else {
+          clearAuth();
+        }
       } catch {
-        clearAuth();
+        if (mounted) clearAuth();
       }
     }
 
     init();
+
+    return () => {
+      mounted = false;
+    };
   }, [setAuth, clearAuth]);
 
   return null;

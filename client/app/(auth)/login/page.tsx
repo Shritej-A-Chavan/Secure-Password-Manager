@@ -1,11 +1,8 @@
-import AuthNavbar from '../components/AuthNavbar'
-import AuthFooter from '../components/AuthFooter'
-import LoginForm from '../components/LoginForm'
+import LoginForm from '../../components/LoginForm'
 
 export default function Page() {
   return (
-    <div className="min-h-screen flex flex-col bg-zinc-950">
-      <AuthNavbar />
+    <div className="min-h-screen flex flex-col  bg-zinc-950">
       {/* Main Content */}
       <div className="flex-1 flex items-center justify-center px-4 relative">
         {/* Background Glow */}
@@ -15,8 +12,6 @@ export default function Page() {
 
         <LoginForm />
       </div>
-
-      <AuthFooter />
     </div>
   )
 }

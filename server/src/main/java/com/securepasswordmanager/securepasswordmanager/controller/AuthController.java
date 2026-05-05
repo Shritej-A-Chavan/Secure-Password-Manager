@@ -49,6 +49,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<Void> login(@RequestBody LoginDto loginDto) {
+        System.out.println("Login");
         String token = authService.authenticate(loginDto);
         
          ResponseCookie cookie = ResponseCookie.from("token", token)
